@@ -11,33 +11,31 @@ let scores, roundScore, activePlayer, gamePlaying;
 
 main();
 // Roll Dice Button Click
-document.querySelector(".btn-roll").addEventListener("click", userRollDice);
+document.querySelector(".btn-roll").addEventListener("click", playerRollDice);
 // Hold Score of User Button
-document.querySelector(".btn-hold").addEventListener("click", userHoldScore);
+document.querySelector(".btn-hold").addEventListener("click", playerHoldScore);
 // New Game Button
 document.querySelector(".btn-new").addEventListener("click", main);
 
 // Init Function part
 
-function initializeVariable() {
+function initializeGameVariables() {
   scores = [0, 0];
   activePlayer = 0;
   roundScore = 0;
   gamePlaying = true;
 }
 
-function imageDisplayNone() {
+function hideDiceImages() {
   document.getElementById("dice-1").style.display = "none";
   document.getElementById("dice-2").style.display = "none";
 }
 
-function resetPlayerContentAndClasses() {
+function resetPlayerInfoAndClasses() {
   document.getElementById("score-0").textContent = "0";
   document.getElementById("score-1").textContent = "0";
-  currentValueToNone();
-  // document.querySelector(".final-score").textContent = "";
-
-  document.getElementById("current-1").textContent = "0";
+  resetCurrentScores();
+  // document.querySelector(".final-score").value = "";
   document
     .querySelector(".player-0-panel")
     .classList.remove("winner", "active");
@@ -46,19 +44,19 @@ function resetPlayerContentAndClasses() {
     .classList.remove("winner", "acitve");
 }
 
-function showWhichPlayerToActive(player) {
+function setActivePlayer(player) {
   document.querySelector(`.player-${player}-panel`).classList.add("active");
 }
 
 // User Roll Dice
 
-function generateRandomNumber() {
+function rollDice() {
   let dice1value = Math.floor(Math.random() * 6) + 1;
   let dice2value = Math.floor(Math.random() * 6) + 1;
   return { dice1value, dice2value };
 }
 
-function diceResultImageOnScreen(dice1, dice2) {
+function updateDiceImages(dice1, dice2) {
   document.getElementById("dice-1").style.display = "block";
   document.getElementById("dice-2").style.display = "block";
   document.getElementById("dice-1").src = "dice-" + dice1 + ".png";
@@ -72,16 +70,16 @@ function checkDiceValueAndUpdateScore(dice1, dice2) {
     document.querySelector("#current-" + activePlayer).textContent = roundScore;
   } else {
     //Next player
-    nextPlayer();
+    handleNextPlayer();
   }
 }
 
-function userRollDice() {
+function playerRollDice() {
   if (gamePlaying) {
     // 1. Random number
-    let { dice1value, dice2value } = generateRandomNumber();
+    let { dice1value, dice2value } = rollDice();
     //2. Display the result
-    diceResultImageOnScreen(dice1value, dice2value);
+    updateDiceImages(dice1value, dice2value);
     //3. Update the round score IF the rolled number was NOT a 1
     checkDiceValueAndUpdateScore(dice1value, dice2value);
   }
@@ -89,28 +87,26 @@ function userRollDice() {
 
 // Functions Hold User Values
 
-function updatePlayerScore() {
+function updatePlayerTotalScore() {
   scores[activePlayer] += roundScore;
   document.querySelector("#score-" + activePlayer).textContent =
     scores[activePlayer];
 }
 
-function checkUserEnterWinningScore() {
+function getWinningScoreFromInput() {
   let input = document.querySelector(".final-score").value;
-  let winningScore;
+  let winningScore = input;
 
-  if (input) {
-    winningScore = input;
-  } else {
+  if (!input) {
     winningScore = 100;
   }
-  return winningScore;
+  return parseInt(winningScore);
 }
 
-function checkUserWonGameAndUpdateClass(winningScore) {
+function checkIfPlayerWonAndUpdateClass(winningScore) {
   if (scores[activePlayer] >= winningScore) {
     document.querySelector("#name-" + activePlayer).textContent = "Winner!";
-    imageDisplayNone();
+    hideDiceImages();
     document
       .querySelector(".player-" + activePlayer + "-panel")
       .classList.add("winner");
@@ -119,45 +115,45 @@ function checkUserWonGameAndUpdateClass(winningScore) {
       .classList.remove("active");
     gamePlaying = false;
   } else {
-    nextPlayer();
+    handleNextPlayer();
   }
 }
 
-function userHoldScore() {
+function playerHoldScore() {
   if (gamePlaying) {
-    updatePlayerScore();
-    let winningScore = checkUserEnterWinningScore();
-    checkUserWonGameAndUpdateClass(winningScore);
+    updatePlayerTotalScore();
+    let winningScore = getWinningScoreFromInput();
+    checkIfPlayerWonAndUpdateClass(winningScore);
   }
 }
 
 // Next Player Functions
 
-function currentValueToNone() {
+function resetCurrentScores() {
   document.getElementById("current-0").textContent = "0";
   document.getElementById("current-1").textContent = "0";
 }
 
-function toggleClassesBothPlayer() {
+function toggleActivePlayer() {
   document.querySelector(".player-0-panel").classList.toggle("active");
   document.querySelector(".player-1-panel").classList.toggle("active");
 }
 
-function switchPlayerAndResetPlayerContent() {
+function switchPlayerAndReset() {
   activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
   roundScore = 0;
-  currentValueToNone();
-  toggleClassesBothPlayer();
-  imageDisplayNone();
+  resetCurrentScores();
+  toggleActivePlayer();
+  hideDiceImages();
 }
 
-function nextPlayer() {
-  switchPlayerAndResetPlayerContent();
+function handleNextPlayer() {
+  switchPlayerAndReset();
 }
 
 function main() {
-  initializeVariable();
-  imageDisplayNone();
-  resetPlayerContentAndClasses();
-  showWhichPlayerToActive(0);
+  initializeGameVariables();
+  hideDiceImages();
+  resetPlayerInfoAndClasses();
+  setActivePlayer(0);
 }
