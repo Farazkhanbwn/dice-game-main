@@ -84,7 +84,6 @@ function playerRollDice() {
     checkDiceValueAndUpdateScore(dice1value, dice2value);
   }
 }
-
 // Functions Hold User Values
 
 function updatePlayerTotalScore() {

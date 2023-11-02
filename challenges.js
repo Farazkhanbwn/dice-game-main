@@ -8,7 +8,6 @@ Change the game to follow these rules:
 */
 
 var scores, roundScore, activePlayer, gamePlaying;
-
 init();
 
 var lastDice;
