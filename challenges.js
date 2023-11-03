@@ -58,6 +58,7 @@ document.querySelector(".btn-hold").addEventListener("click", function () {
   if (gamePlaying) {
     // Add CURRENT score to GLOBAL score
     scores[activePlayer] += roundScore;
+    console.log("value for roundScore is : " + roundScore);
 
     // Update the UI
     document.querySelector("#score-" + activePlayer).textContent =
@@ -132,5 +133,6 @@ function init() {
   document.querySelector(".player-1-panel").classList.remove("winner");
   document.querySelector(".player-0-panel").classList.remove("active");
   document.querySelector(".player-1-panel").classList.remove("active");
+  document.querySelector(".final-score").value = "";
   document.querySelector(".player-0-panel").classList.add("active");
 }
